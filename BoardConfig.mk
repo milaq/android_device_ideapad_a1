@@ -1,4 +1,3 @@
-
 # inherit from the proprietary version
 -include vendor/lenovo/A1_07/BoardConfigVendor.mk
 
@@ -11,7 +10,6 @@ ARCH_ARM_HAVE_TLS_REGISTER := true
 TARGET_GLOBAL_CFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mtune=cortex-a8 -mfpu=neon -mfloat-abi=softfp
 TARGET_PROVIDES_INIT_TARGET_RC := true
-TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_BOOTLOADER_BOARD_NAME := A1_07
 
 BOARD_KERNEL_CMDLINE := no_console_suspend=1 msmsdcc_sdioirq=1 wire.search_count=5
@@ -34,11 +32,12 @@ WIFI_DRIVER_FW_STA_PATH     := "/vendor/firmware/fw_bcm4329.bin"
 WIFI_DRIVER_FW_AP_PATH      := "/vendor/firmware/fw_bcm4329_apsta.bin"
 WIFI_DRIVER_MODULE_ARG      := "firmware_path=/vendor/firmware/fw_bcm4329.bin nvram_path=/vendor/firmware/nvram.txt"
 WIFI_DRIVER_MODULE_NAME     := "dhd"
+WIFI_PRE_LOAD_RFKILL        := true
+WIFI_POST_UNLOAD_RFKILL     := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
-
 
 BOARD_HAS_SDCARD_INTERNAL := true
 BOARD_SDCARD_DEVICE_PRIMARY := /dev/block/mmcblk1p1
@@ -48,11 +47,9 @@ BOARD_VOLD_MAX_PARTITIONS := 5
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 
 BOARD_HAS_LARGE_FILESYSTEM := true
-BOARD_RECOVERY_IGNORE_BOOTABLES := true
+#BOARD_RECOVERY_IGNORE_BOOTABLES := true
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/lenovo/A1_07/recovery/recovery_ui.c
 TARGET_RECOVERY_PRE_COMMAND := "echo 2 > /proc/upgrade_mem/update_flag"
-
-BOARD_USES_GENERIC_AUDIO := false
 
 # Modem
 TARGET_NO_RADIOIMAGE := true
@@ -64,16 +61,34 @@ OMAP3_GL := true
 USE_CAMERA_STUB := false
 ifeq ($(USE_CAMERA_STUB),false)
 BOARD_CAMERA_LIBRARIES := libcamera
+#BOARD_USES_TI_CAMERA_HAL := true
+#BOARD_OMAP3_WITH_FFC := true
+#BOARD_USES_OVERLAY := true
+#BOARD_V4L2_DEVICE := /dev/video1
 endif
 
 # Vibrator
 BOARD_HAS_VIBRATOR_IMPLEMENTATION := ../../device/lenovo/A1_07/vibrator.c
 
+BOARD_USES_GENERIC_AUDIO := false
 BOARD_USES_ALSA_AUDIO := true
 BUILD_WITH_ALSA_UTILS := true
-BOARD_USES_TI_OMAP_MODEM_AUDIO := true
+ALSA_DEFAULT_SAMPLE_RATE := 44100
+BOARD_USES_TI_OMAP_MODEM_AUDIO := false
 BOARD_HAS_NO_MISC_PARTITION := true
+
 HARDWARE_OMX := true
+#BUILD_WITH_TI_AUDIO := 1
+#BUILD_PV_VIDEO_ENCODERS := 1
+#BUILD_WITHOUT_PV := true
+
+BOARD_EGL_CFG := device/lenovo/A1_07/prebuilt/egl.cfg
+
+# override overlay buffers
+COMMON_GLOBAL_CFLAGS += -DOVERLAY_NUM_REQBUFFERS=6
+
+OMAP_ENHANCEMENT := true
+COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT -DTARGET_OMAP3
 
 ifdef HARDWARE_OMX
 OMX_JPEG := true
@@ -84,10 +99,6 @@ OMX_VENDOR_INCLUDES := \
 OMX_VENDOR_WRAPPER := TI_OMX_Wrapper
 BOARD_OPENCORE_LIBRARIES := libOMX_Core
 BOARD_OPENCORE_FLAGS := -DHARDWARE_OMX=1
-endif
-
-ifdef OMAP_ENHANCEMENT
-COMMON_GLOBAL_CFLAGS += -DOMAP_ENHANCEMENT
 endif
 
 BOARD_HAS_NO_SELECT_BUTTON := true
@@ -103,3 +114,7 @@ RECOVERY_URAMDISK_NAME := recovery
 RECOVERY_URAMDISK_LOAD := 0x30800000
 RECOVERY_URAMDISK_ENTRY := 0x30800000
 RECOVERY_URAMDISK_COMPRESSION := none
+
+TARGET_PROVIDES_RELEASETOOLS := true
+TARGET_RELEASETOOL_IMG_FROM_TARGET_SCRIPT := ./device/lenovo/A1_07/releasetools/A1_07_img_from_target_files
+TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := ./device/lenovo/A1_07/releasetools/A1_07_ota_from_target_files
