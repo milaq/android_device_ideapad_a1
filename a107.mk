@@ -177,9 +177,6 @@ FRAMEWORKS_BASE_SUBDIRS += \
 # we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
-# goo.im stuff
-$(call inherit-product, device/lenovo/a107/goo.mk)
-
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_NAME := full_a107
 PRODUCT_DEVICE := a107
